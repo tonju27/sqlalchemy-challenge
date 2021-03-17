@@ -42,5 +42,56 @@ def welcome():
         f"Temperature stat from start to end dates(yyyy-mm-dd): /api/v1.0/yyyy-mm-dd/yyyy-mm-dd"
     )
 
+@app.route('/api/v1.0/<start>')
+def get_t_start(start):
+    session = Session(engine)
+    results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        filter(Measurement.date >= start).all()
+    session.close()
 
+ tobsall = []
+    for min,avg,max in queryresult:
+        tobs_dict = {}
+        tobs_dict["Min"] = min
+        tobs_dict["Average"] = avg
+        tobs_dict["Max"] = max
+        tobsall.append(tobs_dict)
+
+    return jsonify(tobsall)
+
+@app.route('/api/v1.0/<start>/<stop>')
+def get_t_start_stop(start,stop):
+    session = Session(engine)
+    results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        filter(Measurement.date >= start).filter(Measurement.date <= stop).all()
+    session.close()
+
+    tobsall = []
+    for min,avg,max in queryresult:
+        tobs_dict = {}
+        tobs_dict["Min"] = min
+        tobs_dict["Average"] = avg
+        tobs_dict["Max"] = max
+        tobsall.append(tobs_dict)
+
+    return jsonify(tobsall)
+
+@app.route('/api/v1.0/tobs')
+def tobs():
+    session = Session(engine)
+    latest = session.query(Measurement.date).order_by(Measurement.date.desc()).first()[0]
+    latest_date = dt.datetime.strptime(latest, '%Y-%m-%d')
+    year_from_latest = dt.date(latest_date.year -1, latest_date.month, latest_date.day)
+    temperatures = [Measurement.date,Measurement.tobs]
+    results = session.query(*temperatures).filter(Measurement.date >= year_from_latest).all()
+    session.close()
+
+    tobsall = []
+    for date, tobs in results:
+        tobs_dict = {}
+        tobs_dict["Date"] = date
+        tobs_dict["Tobs"] = tobs
+        tobsall.append(tobs_dict)
+
+    return jsonify(tobsall)
 
