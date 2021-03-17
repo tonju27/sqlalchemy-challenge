@@ -26,4 +26,21 @@ Station = Base.classes.station
 #################################################
 app = Flask(__name__)
 
+#################################################
+# Flask Routes
+# Home page
+#################################################
+@app.route("/")
+def welcome():
+    """List all available api routes."""
+    return (
+        f"Available Routes:<br/>"
+        f"Precipitation: /api/v1.0/precipitation<br/>"
+        f"List of Stations: /api/v1.0/stations<br/>"
+        f"Temperature for one year: /api/v1.0/tobs<br/>"
+        f"Temperature stat from the start date(yyyy-mm-dd): /api/v1.0/yyyy-mm-dd<br/>"
+        f"Temperature stat from start to end dates(yyyy-mm-dd): /api/v1.0/yyyy-mm-dd/yyyy-mm-dd"
+    )
+
+
 
