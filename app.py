@@ -49,8 +49,8 @@ def get_t_start(start):
         filter(Measurement.date >= start).all()
     session.close()
 
- tobsall = []
-    for min,avg,max in queryresult:
+    tobsall = []
+    for min,avg,max in results:
         tobs_dict = {}
         tobs_dict["Min"] = min
         tobs_dict["Average"] = avg
@@ -67,7 +67,7 @@ def get_t_start_stop(start,stop):
     session.close()
 
     tobsall = []
-    for min,avg,max in queryresult:
+    for min,avg,max in results:
         tobs_dict = {}
         tobs_dict["Min"] = min
         tobs_dict["Average"] = avg
@@ -83,7 +83,7 @@ def tobs():
     latest_date = dt.datetime.strptime(latest, '%Y-%m-%d')
     year_from_latest = dt.date(latest_date.year -1, latest_date.month, latest_date.day)
     temperatures = [Measurement.date,Measurement.tobs]
-    results = session.query(*temperatures).filter(Measurement.date >= year_from_latest).all()
+    results = session.query(*temperatures).filter(latest_date >= year_from_latest).all()
     session.close()
 
     tobsall = []
