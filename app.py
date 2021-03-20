@@ -83,7 +83,7 @@ def tobs():
     latest_date = dt.datetime.strptime(latest, '%Y-%m-%d')
     year_from_latest = dt.date(latest_date.year -1, latest_date.month, latest_date.day)
     temperatures = [Measurement.date,Measurement.tobs]
-    results = session.query(*temperatures).filter(latest_date >= year_from_latest).all()
+    results = session.query(*temperatures).filter(Measurement.date >= year_from_latest).all()
     session.close()
 
     tobsall = []
